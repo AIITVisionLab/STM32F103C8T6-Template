@@ -69,9 +69,8 @@ extern "C" {
  * ####################*/
 /**
  * @brief Adjust the value of External High Speed oscillator (HSE) used in your
- * application. This value is used by the RCC HAL module to compute the system
- * frequency (when HSE is used as system clock source, directly or through the
- * PLL).
+ * application. This template targets an 8 MHz external crystal and a 72 MHz
+ * system clock generated through the PLL.
  */
 #if !defined(HSE_VALUE)
 #if defined(USE_STM3210C_EVAL)

@@ -10,6 +10,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(ROOT_DIR "${CMAKE_CURRENT_LIST_DIR}/..")
 set(USER_DIR "${ROOT_DIR}/user")
 set(LIB_DIR "${ROOT_DIR}/Libraries")
+set(FREERTOS_DIR "${LIB_DIR}/freertos/Source")
 set(LINKER_SCRIPT "${CMAKE_CURRENT_LIST_DIR}/STM32F103XB_FLASH.ld")
 set(STARTUP_FILE "${LIB_DIR}/startup/startup_stm32f103xb.s")
 set(MCU_FLAGS
@@ -31,8 +32,18 @@ file(GLOB USER_SOURCES CONFIGURE_DEPENDS
     "${USER_DIR}/*.c"
 )
 
+set(FREERTOS_SOURCES
+    "${FREERTOS_DIR}/list.c"
+    "${FREERTOS_DIR}/queue.c"
+    "${FREERTOS_DIR}/tasks.c"
+    "${FREERTOS_DIR}/timers.c"
+    "${FREERTOS_DIR}/portable/GCC/ARM_CM3/port.c"
+    "${FREERTOS_DIR}/portable/MemMang/heap_4.c"
+)
+
 set(SOURCE_FILES
     ${HAL_SOURCES}
+    ${FREERTOS_SOURCES}
     "${LIB_DIR}/stm32f1/system_stm32f1xx.c"
     ${STARTUP_FILE}
     ${USER_SOURCES}
@@ -47,6 +58,8 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 target_include_directories(${PROJECT_NAME} PRIVATE
     "${USER_DIR}"
     "${LIB_DIR}/cmsis"
+    "${FREERTOS_DIR}/include"
+    "${FREERTOS_DIR}/portable/GCC/ARM_CM3"
     "${LIB_DIR}/hal"
     "${LIB_DIR}/hal/Legacy"
     "${LIB_DIR}/stm32f1"
