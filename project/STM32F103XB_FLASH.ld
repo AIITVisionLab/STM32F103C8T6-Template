@@ -3,8 +3,8 @@
 **
 **  File        : STM32F103XB_FLASH.ld
 **
-**  Abstract    : Linker script for STM32F103xB Device with
-**                128KByte FLASH, 20KByte RAM
+**  Abstract    : Linker script for STM32F103C8T6 Device with
+**                64KByte FLASH, 20KByte RAM
 **
 **                Set heap size, stack size and stack location according
 **                to application requirements.
@@ -41,7 +41,7 @@ _Min_Stack_Size = 0x400; /* required amount of stack */
 /* Specify the memory areas */
 MEMORY
 {
-FLASH (rx)      : ORIGIN = 0x08000000, LENGTH = 128K
+FLASH (rx)      : ORIGIN = 0x08000000, LENGTH = 64K
 RAM (xrw)       : ORIGIN = 0x20000000, LENGTH = 20K
 }
 
