@@ -9,6 +9,13 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(ROOT_DIR "${CMAKE_CURRENT_LIST_DIR}/..")
 set(USER_DIR "${ROOT_DIR}/user")
+set(COMMON_DIR "${ROOT_DIR}/common")
+set(CONFIG_DIR "${ROOT_DIR}/config")
+set(PLATFORM_DIR "${ROOT_DIR}/platform")
+set(BOARD_DIR "${ROOT_DIR}/board/custom")
+set(DRIVERS_DIR "${ROOT_DIR}/drivers")
+set(SERVICES_DIR "${ROOT_DIR}/services")
+set(APP_DIR "${ROOT_DIR}/app")
 set(LIB_DIR "${ROOT_DIR}/Libraries")
 set(LINKER_SCRIPT "${CMAKE_CURRENT_LIST_DIR}/STM32F103XB_FLASH.ld")
 set(STARTUP_FILE "${LIB_DIR}/startup/startup_stm32f103xb.s")
@@ -17,24 +24,58 @@ set(MCU_FLAGS
     -mthumb
 )
 
-file(GLOB HAL_SOURCES CONFIGURE_DEPENDS
-    "${LIB_DIR}/hal/stm32f1xx_hal*.c"
+set(VENDOR_SOURCES
+    "${LIB_DIR}/hal/stm32f1xx_hal.c"
+    "${LIB_DIR}/hal/stm32f1xx_hal_cortex.c"
+    "${LIB_DIR}/hal/stm32f1xx_hal_flash.c"
+    "${LIB_DIR}/hal/stm32f1xx_hal_gpio.c"
+    "${LIB_DIR}/hal/stm32f1xx_hal_rcc.c"
+    "${LIB_DIR}/hal/stm32f1xx_hal_rcc_ex.c"
+    "${LIB_DIR}/stm32f1/system_stm32f1xx.c"
+    "${STARTUP_FILE}"
 )
 
-list(REMOVE_ITEM HAL_SOURCES
-    "${LIB_DIR}/hal/stm32f1xx_hal_msp_template.c"
-    "${LIB_DIR}/hal/stm32f1xx_hal_timebase_tim_template.c"
-    "${LIB_DIR}/hal/stm32f1xx_hal_timebase_rtc_alarm_template.c"
+set(COMMON_SOURCES
+    "${COMMON_DIR}/project_assert.c"
 )
 
-file(GLOB USER_SOURCES CONFIGURE_DEPENDS
-    "${USER_DIR}/*.c"
+set(PLATFORM_SOURCES
+    "${PLATFORM_DIR}/platform.c"
+    "${PLATFORM_DIR}/platform_irq.c"
+    "${PLATFORM_DIR}/platform_msp.c"
+)
+
+set(BOARD_SOURCES
+    "${BOARD_DIR}/board.c"
+)
+
+set(DRIVER_SOURCES
+    "${DRIVERS_DIR}/drivers.c"
+)
+
+set(SERVICE_SOURCES
+    "${SERVICES_DIR}/services.c"
+)
+
+set(APP_SOURCES
+    "${APP_DIR}/app.c"
+)
+
+set(USER_SOURCES
+    "${USER_DIR}/main.c"
+    "${USER_DIR}/runtime_stubs.c"
+    "${USER_DIR}/stm32f1xx_hal_msp.c"
+    "${USER_DIR}/stm32f1xx_it.c"
 )
 
 set(SOURCE_FILES
-    ${HAL_SOURCES}
-    "${LIB_DIR}/stm32f1/system_stm32f1xx.c"
-    ${STARTUP_FILE}
+    ${VENDOR_SOURCES}
+    ${COMMON_SOURCES}
+    ${PLATFORM_SOURCES}
+    ${BOARD_SOURCES}
+    ${DRIVER_SOURCES}
+    ${SERVICE_SOURCES}
+    ${APP_SOURCES}
     ${USER_SOURCES}
 )
 
@@ -45,10 +86,19 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 )
 
 target_include_directories(${PROJECT_NAME} PRIVATE
+    "${APP_DIR}"
+    "${BOARD_DIR}"
+    "${COMMON_DIR}"
+    "${CONFIG_DIR}"
+    "${CONFIG_DIR}/board"
+    "${CONFIG_DIR}/product"
+    "${CONFIG_DIR}/target"
+    "${DRIVERS_DIR}"
+    "${PLATFORM_DIR}"
+    "${SERVICES_DIR}"
     "${USER_DIR}"
     "${LIB_DIR}/cmsis"
     "${LIB_DIR}/hal"
-    "${LIB_DIR}/hal/Legacy"
     "${LIB_DIR}/stm32f1"
 )
 
